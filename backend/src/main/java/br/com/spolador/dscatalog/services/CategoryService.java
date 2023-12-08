@@ -2,6 +2,7 @@ package br.com.spolador.dscatalog.services;
 
 import br.com.spolador.dscatalog.entities.Category;
 import br.com.spolador.dscatalog.repositories.CategoryRepository;
+import br.com.spolador.dscatalog.services.exceptions.EntityNotFoundEception;
 import dto.CategoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,9 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public CategoryDto findById(Long id){
         Optional<Category> objeto = categoryRepository.findById(id);
-        Category entity = objeto.get();
+        Category entity = objeto.orElseThrow(
+                () -> new EntityNotFoundEception("Entity not found")
+        );
         return new CategoryDto(entity);
     }
 }
