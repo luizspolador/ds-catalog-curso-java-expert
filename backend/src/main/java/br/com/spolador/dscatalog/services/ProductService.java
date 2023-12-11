@@ -1,10 +1,13 @@
 package br.com.spolador.dscatalog.services;
 
 import br.com.spolador.dscatalog.entities.Category;
+import br.com.spolador.dscatalog.entities.Product;
 import br.com.spolador.dscatalog.repositories.CategoryRepository;
+import br.com.spolador.dscatalog.repositories.ProductRepository;
 import br.com.spolador.dscatalog.services.exceptions.DatabaseException;
 import br.com.spolador.dscatalog.services.exceptions.ResourceNotFoundException;
 import dto.CategoryDto;
+import dto.ProductDto;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,43 +20,44 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-public class CategoryService {
+public class ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<CategoryDto> findAllPaged(Pageable pageable){
-        Page<Category> categories = categoryRepository.findAll(pageable);
-        return categories.map(x -> new CategoryDto(x));
+    public Page<ProductDto> findAllPaged(Pageable pageable){
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(x -> new ProductDto(x));
     }
 
     @Transactional(readOnly = true)
-    public CategoryDto findById(Long id){
-        Optional<Category> objeto = categoryRepository.findById(id);
-        Category entity = objeto.orElseThrow(
+    public ProductDto findById(Long id){
+        Optional<Product> objeto = productRepository.findById(id);
+        Product entity = objeto.orElseThrow(
                 () -> new ResourceNotFoundException("Entity not found")
         );
-        return new CategoryDto(entity);
+        return new ProductDto(entity, entity.getCategories());
     }
 
     @Transactional
-    public CategoryDto insert(CategoryDto dto) {
-        Category entity = new Category();
+    public ProductDto insert(ProductDto dto) {
+        Product entity = new Product();
         copyDtoToEntity(dto, entity);
-//        entity.setName(dto.getName());
-        entity = categoryRepository.save(entity);
-        return new CategoryDto(entity);
+        entity = productRepository.save(entity);
+        return new ProductDto(entity);
     }
 
     @Transactional
-    public CategoryDto update(Long id, CategoryDto dto) {
+    public ProductDto update(Long id, ProductDto dto) {
         try {
-            Category entity = categoryRepository.getReferenceById(id); // instancia um obj provisorio. Não acessa o db
+            Product entity = productRepository.getReferenceById(id); // instancia um obj provisorio. Não acessa o db
             copyDtoToEntity(dto, entity);
-//            entity.setName(dto.getName());
-            entity = categoryRepository.save(entity);
-            return new CategoryDto(entity);
+            entity = productRepository.save(entity);
+            return new ProductDto(entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id " + id + " not found");
         }
@@ -61,18 +65,29 @@ public class CategoryService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
-        if (!categoryRepository.existsById(id)) {
+        if (!productRepository.existsById(id)) {
             throw new ResourceNotFoundException("Id " + id + " not found");
         }
         try {
-            categoryRepository.deleteById(id);
+            productRepository.deleteById(id);
         }
         catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity violation");
         }
     }
 
-    private void copyDtoToEntity(CategoryDto dto, Category entity) {
+
+    private void copyDtoToEntity(ProductDto dto, Product entity) {
         entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setDate(dto.getDate());
+        entity.setImgUrl(dto.getImgUrl());
+        entity.setPrice(dto.getPrice());
+
+        entity.getCategories().clear();
+        for(CategoryDto catDto : dto.getCategories()){
+            Category category = categoryRepository.getReferenceById(catDto.getId());
+            entity.getCategories().add(category);
+        }
     }
 }

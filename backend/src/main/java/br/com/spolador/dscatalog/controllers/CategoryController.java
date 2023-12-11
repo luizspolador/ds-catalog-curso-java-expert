@@ -1,15 +1,15 @@
 package br.com.spolador.dscatalog.controllers;
 
-import br.com.spolador.dscatalog.entities.Category;
 import br.com.spolador.dscatalog.services.CategoryService;
 import dto.CategoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/categories")
@@ -19,8 +19,8 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> buscarTodasCAtegorias(){
-        List<CategoryDto> categories = categoryService.findAll();
+    public ResponseEntity<Page<CategoryDto>> buscarTodasCAtegorias(Pageable pageable){
+        Page<CategoryDto> categories = categoryService.findAllPaged(pageable);
         return ResponseEntity.ok().body(categories);
     }
 
@@ -41,6 +41,12 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> atualizarCategoria(@PathVariable Long id, @RequestBody CategoryDto dto){
         dto = categoryService.update(id, dto);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarCategoria(@PathVariable Long id){
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
