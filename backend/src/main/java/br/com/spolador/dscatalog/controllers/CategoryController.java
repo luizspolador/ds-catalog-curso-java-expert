@@ -19,22 +19,28 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> buscarTodos(){
+    public ResponseEntity<List<CategoryDto>> buscarTodasCAtegorias(){
         List<CategoryDto> categories = categoryService.findAll();
         return ResponseEntity.ok().body(categories);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> buscarPorId(@PathVariable Long id){
+    public ResponseEntity<CategoryDto> buscarCAtegoriaPorId(@PathVariable Long id){
         CategoryDto dto = categoryService.findById(id);
         return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDto> inserir(@RequestBody CategoryDto dto){
+    public ResponseEntity<CategoryDto> inserirCategoria(@RequestBody CategoryDto dto){
         dto = categoryService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDto> atualizarCategoria(@PathVariable Long id, @RequestBody CategoryDto dto){
+        dto = categoryService.update(id, dto);
+        return ResponseEntity.ok().body(dto);
     }
 
 }

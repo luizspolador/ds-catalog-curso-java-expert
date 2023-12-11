@@ -1,6 +1,6 @@
 package br.com.spolador.dscatalog.controllers.exceptions;
 
-import br.com.spolador.dscatalog.services.exceptions.EntityNotFoundEception;
+import br.com.spolador.dscatalog.services.exceptions.ResourceNotFoundEception;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,8 @@ import java.time.Instant;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundEception.class)
-    public ResponseEntity<StantardError> entityNotFound (EntityNotFoundEception e, HttpServletRequest request){
+    @ExceptionHandler(ResourceNotFoundEception.class)
+    public ResponseEntity<StantardError> entityNotFound (ResourceNotFoundEception e, HttpServletRequest request){
         StantardError error = new StantardError();
         error.setTimestamp(Instant.now());
         error.setStatus(HttpStatus.NOT_FOUND.value());
