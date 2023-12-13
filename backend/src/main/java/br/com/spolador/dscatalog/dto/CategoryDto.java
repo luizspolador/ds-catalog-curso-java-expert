@@ -1,4 +1,4 @@
-package dto;
+package br.com.spolador.dscatalog.dto;
 
 import br.com.spolador.dscatalog.entities.Category;
 import lombok.AllArgsConstructor;

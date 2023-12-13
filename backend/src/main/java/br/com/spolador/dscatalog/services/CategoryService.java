@@ -4,7 +4,7 @@ import br.com.spolador.dscatalog.entities.Category;
 import br.com.spolador.dscatalog.repositories.CategoryRepository;
 import br.com.spolador.dscatalog.services.exceptions.DatabaseException;
 import br.com.spolador.dscatalog.services.exceptions.ResourceNotFoundException;
-import dto.CategoryDto;
+import br.com.spolador.dscatalog.dto.CategoryDto;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
