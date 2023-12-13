@@ -10,6 +10,7 @@ import java.util.Set;
 @Entity @Table(name = "tb_product")
 @NoArgsConstructor @Getter @EqualsAndHashCode(of = "id")
 public class Product {
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

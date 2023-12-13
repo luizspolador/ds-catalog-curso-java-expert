@@ -1,7 +1,7 @@
 package br.com.spolador.dscatalog.controllers;
 
 import br.com.spolador.dscatalog.services.ProductService;
-import dto.ProductDto;
+import br.com.spolador.dscatalog.dto.ProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
